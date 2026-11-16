@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>OmniVoice · 设置</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --card: #ffffff;
+        --line: #e5e7eb;
+        --text: #111827;
+        --muted: #6b7280;
+        --accent: #2563eb;
+        --ok: #16a34a;
+        --err: #dc2626;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 28px 20px 60px;
+        background: var(--bg);
+        color: var(--text);
+        font: 14px/1.6 system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+      }
+      .wrap { max-width: 760px; margin: 0 auto; }
+      h1 { font-size: 20px; margin: 0 0 4px; }
+      .sub { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 18px 18px 6px;
+        margin-bottom: 16px;
+      }
+      .card h2 {
+        font-size: 14px;
+        margin: 0 0 14px;
+        color: var(--text);
+        font-weight: 600;
+      }
+      .card h2 span { color: var(--muted); font-weight: 400; margin-left: 8px; font-size: 12px; }
+      .row { display: flex; gap: 14px; flex-wrap: wrap; }
+      .field { flex: 1 1 220px; margin-bottom: 14px; min-width: 0; }
+      .field.wide { flex: 1 1 100%; }
+      label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+      input[type="text"], input[type="password"], input[type="number"], select, textarea {
+        width: 100%;
+        padding: 9px 11px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--text);
+        font: 13px/1.5 inherit;
+        outline: none;
+      }
+      input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); }
+      textarea { resize: vertical; min-height: 74px; font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+      .check { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 12px; font-size: 13px; color: var(--text); }
+      .check input { margin-top: 3px; }
+      .check small { display: block; color: var(--muted); font-size: 12px; }
+      .hint { color: var(--muted); font-size: 12px; margin: -6px 0 14px; }
+      .actions { display: flex; align-items: center; gap: 12px; margin: 4px 0 22px; }
+      button {
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--text);
+        padding: 9px 16px;
+        border-radius: 8px;
+        font: 13px/1 inherit;
+      }
+      button:hover { border-color: #d1d5db; background: #fafafa; }
+      button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+      button.primary:hover { background: #1d4ed8; }
+      .status { font-size: 12px; color: var(--muted); }
+      .status.ok { color: var(--ok); }
+      .status.err { color: var(--err); }
+      pre {
+        margin: 0 0 14px;
+        padding: 12px;
+        background: #0f172a;
+        color: #e2e8f0;
+        border-radius: 8px;
+        font: 12px/1.6 ui-monospace, Consolas, monospace;
+        white-space: pre-wrap;
+        word-break: break-all;
+        max-height: 260px;
+        overflow: auto;
+      }
+      .foot { color: var(--muted); font-size: 12px; line-height: 1.8; }
+      .foot code { background: #eef2f7; padding: 1px 5px; border-radius: 4px; }
+      .foot a { color: var(--accent); text-decoration: none; }
+      .foot a:hover { text-decoration: underline; }
+      .byline {
+        font-size: 12px;
+        font-weight: 400;
+        color: var(--muted);
+        text-decoration: none;
+        margin-left: 7px;
+        vertical-align: 2px;
+      }
+      .byline:hover { color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>OmniVoice<a class="byline" href="https://github.com/lucas-nous" target="_blank" rel="noopener noreferrer">by Lucas</a></h1>
+      <div class="sub">用你自己的 OpenAI 格式 TTS 接口接管 ChatGPT 朗读；任意网页选中文本也能朗读。</div>
+
+      <div class="card">
+        <h2>接口<span>OpenAI 格式 /v1/audio/speech</span></h2>
+        <div class="field wide">
+          <label>接口地址</label>
+          <input id="baseUrl" type="text" spellcheck="false" placeholder="https://api.openai.com/v1/audio/speech" />
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>API Key（没有就留空）</label>
+            <input id="apiKey" type="password" spellcheck="false" autocomplete="off" placeholder="sk-..." />
+          </div>
+          <div class="field">
+            <label>模型</label>
+            <input id="model" type="text" spellcheck="false" placeholder="gpt-4o-mini-tts" />
+          </div>
+          <div class="field">
+            <label>音色 voice</label>
+            <input id="voice" type="text" spellcheck="false" placeholder="alloy" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>返回格式</label>
+            <select id="format">
+              <option value="mp3">mp3</option>
+              <option value="wav">wav</option>
+              <option value="ogg">ogg</option>
+              <option value="aac">aac</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>语速（接口侧 speed）</label>
+            <input id="speed" type="number" min="0.5" max="2" step="0.05" />
+          </div>
+          <div class="field">
+            <label>单段字数上限</label>
+            <input id="maxChars" type="number" min="40" max="400" step="10" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>语种与情感<span>给 GPT-SoVITS 这类接口用</span></h2>
+        <div class="row">
+          <div class="field">
+            <label>朗读文本语种 text_lang</label>
+            <select id="textLang">
+              <option>中英混合</option>
+              <option>中文</option>
+              <option>英语</option>
+              <option>日语</option>
+              <option>粤语</option>
+              <option>韩语</option>
+              <option>日英混合</option>
+              <option>粤英混合</option>
+              <option>韩英混合</option>
+              <option>多语种混合</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>参考音频语种 prompt_lang</label>
+            <select id="promptLang">
+              <option>中文</option>
+              <option>英语</option>
+              <option>日语</option>
+              <option>粤语</option>
+              <option>韩语</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>情感 emotion</label>
+            <input id="emotion" type="text" spellcheck="false" />
+          </div>
+        </div>
+        <div class="check">
+          <input id="useOtherParams" type="checkbox" />
+          <div>
+            发送 <code>other_params</code> 附加层
+            <small>GPT-SoVITS 的 GSVI 接口需要打开；接标准 OpenAI 或普通中转时关掉。</small>
+          </div>
+        </div>
+        <div class="check">
+          <input id="keyInBody" type="checkbox" />
+          <div>
+            把 API Key 同时写进 <code>other_params.app_key</code>
+            <small>GSVI 的密钥不在请求头里，而在这个字段；用别的服务可以关掉。</small>
+          </div>
+        </div>
+        <div class="field wide">
+          <label>附加参数 JSON（会并进 other_params）</label>
+          <textarea id="extraParams" spellcheck="false" placeholder='{"top_k": 10, "temperature": 1}'></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>交互</h2>
+        <div class="check">
+          <input id="enableChatGPT" type="checkbox" />
+          <div>
+            替换 ChatGPT 网页的朗读
+            <small>点页面里的朗读按钮时，把整页静音，改用这里的接口播放同一条消息。</small>
+          </div>
+        </div>
+        <div class="check">
+          <input id="enableSelection" type="checkbox" />
+          <div>
+            选中文本后显示「朗读」小按钮
+            <small>所有网页生效，包括 ChatGPT。</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="test">试听一句</button>
+        <button id="save">保存</button>
+        <span class="status" id="status"></span>
+      </div>
+
+      <div class="card">
+        <h2>诊断<span>朗读没反应的时候看这里</span></h2>
+        <pre id="diag">（还没有记录）</pre>
+        <div class="actions" style="margin-bottom: 14px;">
+          <button id="refreshDiag">刷新</button>
+          <button id="copyDiag">复制</button>
+        </div>
+        <div class="foot">
+          安装：Chrome / Edge 地址栏输入 <code>chrome://extensions</code> 或 <code>edge://extensions</code>，
+          打开「开发人员模式」，点「加载解压缩的扩展」，选这个文件夹。
+          改完设置不用重新加载扩展，刷新一下网页就行。
+        </div>
+      </div>
+
+      <div class="foot" style="text-align: center; padding: 6px 0 4px; opacity: .85;">
+        OmniVoice v1.0.0 ·
+        <a href="https://github.com/lucas-nous" target="_blank" rel="noopener noreferrer">Lucas</a>
+        ·
+        <a href="https://github.com/lucas-nous" target="_blank" rel="noopener noreferrer">github.com/lucas-nous</a>
+      </div>
+    </div>
+
+    <script src="options.js"></script>
+  </body>
+</html>
